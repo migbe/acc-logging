@@ -61,6 +61,19 @@ uint32_t myNumber = 1000;  //some value for the counter
 int16_t myX = 0;
 int16_t myY = 0;
 int16_t myZ = 0;
+// int8_t myAccBin[6] = {0, 0, 0, 0, 0, 0}; // Miguel: to save in Array, should be measured if it impacts perfomance.
+int8_t myXbinA = 0;
+int8_t myXbinB = 0;
+int8_t myYbinA = 0;
+int8_t myYbinB = 0;
+int8_t myZbinA = 0;
+int8_t myZbinB = 0;
+
+struct datastore {
+	int16_t myXstrc
+	int16_t myYstrc
+	int16_t myZstrc
+};
 
 
 void setup() {
@@ -162,6 +175,31 @@ void setupSD(){
 		return;
 	}
 	Serial.println("---SD Card initialized----");
+}
+
+void writeSDbin(){
+	accSensor.read();
+	myX= accSensor.x;
+	myY= accSensor.y;
+	myZ= accSensor.z;
+	myXbinA= myX >> 8;
+	myXbinB= myX & 0x00FF;
+	myYbinA= myY >> 8;
+	myYbinB= myY & 0x00FF;
+	myZbinA= myZ >> 8;
+	myZbinB= myZ & 0x00FF;
+	//myAccBin[0]= myX >> 8;      //Miguel: Lines to save on array form
+	//myAccBin[1]= myX & 0x00FF;
+	//myAccBin[2]= myY >> 8;
+	//myAccBin[3]= myY & 0x00FF;
+	//myAccBin[4]= myZ >> 8;
+	//myAccBin[5]= myZ & 0x00FF;
+	//struct datastore myAccData;  //Miguel: Lines to save in structure form
+	//myAccData.myXstrc = myX;
+	//myAccData.myYstrc = myY;
+	//myAccData.myZstrc = myZ;
+	dataFile.write((const uint8_t *)&myAccData, sizeof(myAccData));
+	//to reconstruct e.g.: int16_t myXrec= (int16_t)myXbitA << 8 | (int16_t)myXbitB	
 }
 
 void writeSDStringln(String str){
